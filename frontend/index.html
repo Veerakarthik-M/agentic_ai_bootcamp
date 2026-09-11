@@ -1139,11 +1139,11 @@
         const claimText = typeof c === 'string' ? c : (c.claim || c.text || '');
         const sourceText = typeof c === 'object' ? (c.verification_source || c.source || '') : '';
         const status = typeof c === 'object' ? (c.status || 'VERIFIED') : 'VERIFIED';
-        const color = status === 'VERIFIED' ? 'var(--accent-green)' : status === 'CONTRADICTED' ? 'var(--accent-red)' : 'var(--accent-yellow)';
-        const icon = status === 'VERIFIED' ? '✓' : status === 'CONTRADICTED' ? '✗' : '?';
+        const claimColor = status === 'VERIFIED' ? 'var(--accent-green)' : status === 'CONTRADICTED' ? 'var(--accent-red)' : 'var(--accent-yellow)';
+        const claimIcon = status === 'VERIFIED' ? '✓' : status === 'CONTRADICTED' ? '✗' : '?';
         return `
           <div style="display:flex;gap:8px;padding:8px;border-radius:6px;border:1px solid var(--border);margin-bottom:6px">
-            <span style="color:${color};font-weight:700">${icon}</span>
+            <span style="color:${claimColor};font-weight:700">${claimIcon}</span>
             <div>
               <div style="font-size:12px;color:var(--text-primary)">${claimText}</div>
               ${sourceText ? `<div style="font-size:11px;color:var(--text-muted)">${sourceText}</div>` : ''}

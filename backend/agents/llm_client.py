@@ -166,44 +166,7 @@ def _generate_fallback_response(prompt: str, system_context: str = "") -> str:
                 "supervisor_note": "Dynamic swarm approved for complex problem."
             }, indent=2)
 
-    # 4. Hypothesis Generator / Analysis Agent
-    if "hypothesis" in sys_lower or "hypotheses" in p_lower or "analysis agent" in sys_lower:
-        actions = [
-            "Inspect Machine M17 spindle bearings",
-            "Replace non-compliant MAT-X17 stock with approved Alloy 6061 stock",
-            "Recalibrate Machine M17 after bearing replacement",
-            "Review supplier Titan Metals Ltd. (SUP-Y) for material non-compliance and deviation"
-        ]
-        if is_high_risk:
-            actions = [
-                "Immediately stop all production across all lines",
-                "Terminate our contract with Supplier Y and recall products",
-                "Shut down Machine M17 permanently",
-                "Fire the quality control manager"
-            ]
-
-        return json.dumps({
-            "hypotheses": [
-                {
-                    "id": "H1",
-                    "description": "Supplier Titan Metals Ltd. (SUP-Y) delivered non-compliant material batch MAT-X17 (Aluminum Alloy 7075, Hardness 98) with deviation from 6061 specification. Excessive material hardness caused tool chatter and elevated operating temperature to 84.2C on Machine M17.",
-                    "confidence_score": 0.92,
-                    "rank": 1,
-                    "supporting_evidence": [
-                        "Supplier report flags MAT-X17 hardness 98 (exceeding 82-86 spec for 6061)",
-                        "SQL machine data shows Machine M17 temperature reached 84.2C",
-                        "Statistical correlation r=0.94 between operating temperature and defect rate"
-                    ],
-                    "refuting_evidence": []
-                }
-            ],
-            "root_cause_assessment": "Supplier Titan Metals Ltd. (SUP-Y) delivered non-compliant material batch MAT-X17 (Aluminum Alloy 7075, Hardness 98) with deviation from 6061 specification.",
-            "causal_chain": ["Supplier switch to Titan", "Non-compliant MAT-X17 load", "Friction & temperature spike", "Defect increase"],
-            "recommended_actions": actions,
-            "agent_confidence": 0.88
-        }, indent=2)
-
-    # 5. Critic
+    # 4. Critic
     if "critic" in sys_lower or "evaluate the proposed hypotheses" in p_lower or "weaknesses" in sys_lower:
         if is_adversarial:
             return json.dumps({
@@ -248,6 +211,43 @@ def _generate_fallback_response(prompt: str, system_context: str = "") -> str:
                 }
             ],
             "risk_level": risk_lvl
+        }, indent=2)
+
+    # 5. Hypothesis Generator / Analysis Agent
+    if "hypothesis" in sys_lower or "hypotheses" in p_lower or "analysis agent" in sys_lower:
+        actions = [
+            "Inspect Machine M17 spindle bearings",
+            "Replace non-compliant MAT-X17 stock with approved Alloy 6061 stock",
+            "Recalibrate Machine M17 after bearing replacement",
+            "Review supplier Titan Metals Ltd. (SUP-Y) for material non-compliance and deviation"
+        ]
+        if is_high_risk:
+            actions = [
+                "Immediately stop all production across all lines",
+                "Terminate our contract with Supplier Y and recall products",
+                "Shut down Machine M17 permanently",
+                "Fire the quality control manager"
+            ]
+
+        return json.dumps({
+            "hypotheses": [
+                {
+                    "id": "H1",
+                    "description": "Supplier Titan Metals Ltd. (SUP-Y) delivered non-compliant material batch MAT-X17 (Aluminum Alloy 7075, Hardness 98) with deviation from 6061 specification. Excessive material hardness caused tool chatter and elevated operating temperature to 84.2C on Machine M17.",
+                    "confidence_score": 0.92,
+                    "rank": 1,
+                    "supporting_evidence": [
+                        "Supplier report flags MAT-X17 hardness 98 (exceeding 82-86 spec for 6061)",
+                        "SQL machine data shows Machine M17 temperature reached 84.2C",
+                        "Statistical correlation r=0.94 between operating temperature and defect rate"
+                    ],
+                    "refuting_evidence": []
+                }
+            ],
+            "root_cause_assessment": "Supplier Titan Metals Ltd. (SUP-Y) delivered non-compliant material batch MAT-X17 (Aluminum Alloy 7075, Hardness 98) with deviation from 6061 specification.",
+            "causal_chain": ["Supplier switch to Titan", "Non-compliant MAT-X17 load", "Friction & temperature spike", "Defect increase"],
+            "recommended_actions": actions,
+            "agent_confidence": 0.88
         }, indent=2)
 
     # 6. Verifier
