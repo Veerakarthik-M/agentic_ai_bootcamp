@@ -68,30 +68,103 @@ class OSSupervisor:
                 "verification": {"type": "action_status"}
             })
 
-        # Pattern 2.5: Browser & Website opening (e.g. YouTube, Google, web URLs)
-        if any(w in goal_lower for w in ["chrome", "browser", "youtube", "yt", "open site", "url", "website", "web"]):
-            target_url = "https://www.youtube.com" if any(w in goal_lower for w in ["youtube", "yt"]) else "https://www.google.com"
-            if "github" in goal_lower:
-                target_url = "https://github.com"
-            for token in user_goal.split():
-                if token.startswith("http://") or token.startswith("https://"):
-                    target_url = token
-                    break
+        # Pattern 2.5: Browser & YouTube Automation (Search & Play)
+        if any(w in goal_lower for w in ["chrome", "browser", "youtube", "yt", "open site", "url", "website", "web", "play"]):
+            is_youtube = any(w in goal_lower for w in ["youtube", "yt"]) or ("play" in goal_lower and not any(k in goal_lower for k in ["game", "sport"]))
+            
+            if is_youtube:
+                import urllib.parse
+                import re
 
-            browser_name = "chrome" if "chrome" in goal_lower else "default"
-            required_agents.add("OS_Shell_Agent")
-            plan.append({
-                "step_id": len(plan) + 1,
-                "agent": "OS_Shell_Agent",
-                "description": f"Open '{target_url}' using Google Chrome",
-                "action": "open_browser",
-                "params": {"url": target_url, "browser": browser_name},
-                "verification": {
-                    "type": "process_running",
-                    "process_name": "chrome.exe",
-                    "expected": True
-                }
-            })
+                # Extract specific search query if provided
+                query = None
+                m = re.search(r'(?:search for|search|play|watch|listen to)\s+["\']?([^"\']+)["\']?\s+(?:on|in|using)\s+(?:youtube|yt|chrome)', goal_lower)
+                if m:
+                    query = m.group(1).strip()
+
+                if not query:
+                    m = re.search(r'(?:youtube|yt|chrome)[^a-z0-9]+(?:and\s+)?(?:search for|search|play|watch|listen to)\s+["\']?([^"\']+)["\']?', goal_lower)
+                    if m:
+                        cand = m.group(1).strip()
+                        cand = re.sub(r'\s+(using chrome|in chrome|on chrome|please|okay|bro)$', '', cand).strip()
+                        if cand:
+                            query = cand
+
+                if not query:
+                    m = re.search(r'(?:search for|search|play|find)\s+(.+)', goal_lower)
+                    if m:
+                        cand = m.group(1).strip()
+                        cand = re.sub(r'\s+(on youtube|in youtube|on yt|in yt|using chrome|in chrome|okay|bro|please)$', '', cand).strip()
+                        if cand and cand not in ["youtube", "yt", "chrome", "browser", "video"]:
+                            query = cand
+
+                # Default fallback query if user simply asked to open YouTube or play
+                if not query:
+                    query = "lofi hip hop radio beats to relax"
+
+                target_url = f"https://www.youtube.com/results?search_query={urllib.parse.quote_plus(query)}"
+                browser_name = "chrome" if "chrome" in goal_lower else "default"
+
+                required_agents.add("OS_Shell_Agent")
+                required_agents.add("OS_Vision_GUI_Agent")
+
+                # Step 1: Open Chrome to YouTube search results
+                plan.append({
+                    "step_id": len(plan) + 1,
+                    "agent": "OS_Shell_Agent",
+                    "description": f"Open YouTube search for '{query}' in Google Chrome",
+                    "action": "open_browser",
+                    "params": {"url": target_url, "browser": browser_name},
+                    "verification": {
+                        "type": "process_running",
+                        "process_name": "chrome.exe",
+                        "expected": True
+                    }
+                })
+
+                # Step 2: Focus the browser window and wait for results
+                plan.append({
+                    "step_id": len(plan) + 1,
+                    "agent": "OS_Vision_GUI_Agent",
+                    "description": "Focus Google Chrome window and allow YouTube search results to load",
+                    "action": "focus_app",
+                    "params": {"title": "YouTube"},
+                    "verification": {"type": "action_status"}
+                })
+
+                # Step 3: Click first video and trigger playback
+                plan.append({
+                    "step_id": len(plan) + 1,
+                    "agent": "OS_Vision_GUI_Agent",
+                    "description": f"Click the top video result to start playing '{query}'",
+                    "action": "play_youtube_video",
+                    "params": {"query": query},
+                    "verification": {"type": "action_status"}
+                })
+
+            else:
+                target_url = "https://www.google.com"
+                if "github" in goal_lower:
+                    target_url = "https://github.com"
+                for token in user_goal.split():
+                    if token.startswith("http://") or token.startswith("https://"):
+                        target_url = token
+                        break
+
+                browser_name = "chrome" if "chrome" in goal_lower else "default"
+                required_agents.add("OS_Shell_Agent")
+                plan.append({
+                    "step_id": len(plan) + 1,
+                    "agent": "OS_Shell_Agent",
+                    "description": f"Open '{target_url}' using Google Chrome",
+                    "action": "open_browser",
+                    "params": {"url": target_url, "browser": browser_name},
+                    "verification": {
+                        "type": "process_running",
+                        "process_name": "chrome.exe",
+                        "expected": True
+                    }
+                })
 
         # Pattern 3: Launch Notepad or text editor & optionally write
         if "notepad" in goal_lower and any(w in goal_lower for w in ["open", "launch", "start", "write", "note"]):

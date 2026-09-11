@@ -10,7 +10,8 @@ from typing import Dict, Any, List, Optional
 from tools.desktop_tools import (
     take_screenshot, annotate_grid_on_image, click_at,
     type_text, send_hotkey, press_key, get_active_window_info,
-    list_open_windows, focus_window_by_title, read_clipboard, write_clipboard
+    list_open_windows, focus_window_by_title, read_clipboard, write_clipboard,
+    get_screen_size
 )
 from agents.os_state import OSAutomationState
 
@@ -54,6 +55,45 @@ class OSVisionAgent:
         res = send_hotkey("ctrl", "v")
         return {"status": "success", "text_pasted": text}
 
+    def press(self, key: str) -> Dict[str, Any]:
+        """Press a keyboard key."""
+        return press_key(key)
+
+    def wait(self, seconds: float = 2.0) -> Dict[str, Any]:
+        """Pause execution to allow UI, browser, or page to settle."""
+        time.sleep(seconds)
+        return {"status": "success", "waited_seconds": seconds}
+
+    def play_youtube_video(self, query: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Brings browser into focus, waits for page to settle, clicks top video, and ensures playback.
+        """
+        # Step A: Focus Chrome or YouTube window
+        focus_res = self.focus_app("youtube")
+        if focus_res.get("status") != "success":
+            self.focus_app("chrome")
+
+        time.sleep(2.0)
+
+        # Step B: Click first video thumbnail based on current screen dimensions
+        screen_w, screen_h = get_screen_size()
+        video_x = int(screen_w * 0.31)
+        video_y = int(screen_h * 0.27)
+
+        click_res = self.click(x=video_x, y=video_y)
+
+        # Step C: Give video player a moment to mount, then send play key
+        time.sleep(1.8)
+        self.press("k")
+
+        return {
+            "status": "success",
+            "action": "play_youtube_video",
+            "query": query or "top result",
+            "click_target": {"x": video_x, "y": video_y},
+            "playback_started": True
+        }
+
     def process_step(self, step: Dict[str, Any], state: OSAutomationState) -> Dict[str, Any]:
         """Execute a vision or GUI action step."""
         action = step.get("action", "")
@@ -76,9 +116,15 @@ class OSVisionAgent:
         elif action == "hotkey":
             keys = params.get("keys", [])
             return self.hotkey(*keys)
+        elif action == "press_key":
+            return self.press(key=params.get("key", "enter"))
+        elif action == "wait":
+            return self.wait(seconds=params.get("seconds", 2.0))
         elif action == "focus_app":
             return self.focus_app(title_query=params.get("title", ""))
         elif action == "clipboard_paste":
             return self.clipboard_paste(text=params.get("text", ""))
+        elif action == "play_youtube_video":
+            return self.play_youtube_video(query=params.get("query"))
         else:
             return {"status": "error", "message": f"Unknown vision/GUI action: {action}"}

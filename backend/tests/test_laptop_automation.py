@@ -175,14 +175,20 @@ class TestLaptopAutomationSuite(unittest.TestCase):
         decomp = supervisor.decompose_goal(goal)
 
         self.assertIn("OS_Shell_Agent", decomp["required_agents"])
-        step = decomp["plan"][0]
-        self.assertEqual(step["action"], "open_browser")
-        self.assertEqual(step["params"]["url"], "https://www.youtube.com")
+        self.assertIn("OS_Vision_GUI_Agent", decomp["required_agents"])
+        self.assertGreaterEqual(len(decomp["plan"]), 3)
+        step1 = decomp["plan"][0]
+        self.assertEqual(step1["action"], "open_browser")
+        self.assertTrue(step1["params"]["url"].startswith("https://www.youtube.com"))
+        step2 = decomp["plan"][1]
+        self.assertEqual(step2["action"], "focus_app")
+        step3 = decomp["plan"][2]
+        self.assertEqual(step3["action"], "play_youtube_video")
 
         state = supervisor.execute_custom_plan(goal, plan=decomp["plan"])
         self.assertTrue(state["is_completed"])
         self.assertEqual(state["actions_history"][0]["status"], "VERIFIED")
-        print("[TEST 7 PASS] Multi-agent system successfully planned, launched, and verified opening YouTube in Chrome.")
+        print("[TEST 7 PASS] Multi-agent system successfully planned, launched, and verified searching and playing YouTube in Chrome.")
 
 
 if __name__ == "__main__":

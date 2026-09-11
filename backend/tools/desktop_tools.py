@@ -278,11 +278,20 @@ def list_open_windows() -> List[Dict[str, Any]]:
         except Exception:
             pass
         return True
-
     try:
         win32gui.EnumWindows(enum_windows_callback, None)
     except Exception as e:
         logger.debug(f"Window enumeration notice: {e}")
+
+    # Fallback to interactive desktop enumeration if EnumWindows returned empty
+    if not windows:
+        try:
+            import ctypes
+            hdesk = ctypes.windll.user32.OpenDesktopW('default', 0, False, 0x10000000)
+            if hdesk:
+                win32gui.EnumDesktopWindows(hdesk, enum_windows_callback, None)
+        except Exception as e:
+            logger.debug(f"Desktop fallback enumeration notice: {e}")
 
     return windows
 

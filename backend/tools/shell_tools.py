@@ -153,11 +153,8 @@ def open_browser(url: str, browser: str = "chrome") -> Dict[str, Any]:
 
     try:
         if chrome_path:
-            # On Windows, 'cmd /c start' communicates with the Shell/DWM to create a visible, focused window
-            if os.name == 'nt':
-                subprocess.Popen(f'cmd /c start "" "{chrome_path}" "{url}"', shell=True)
-            else:
-                subprocess.Popen([chrome_path, url])
+            # Launch Chrome directly without nested cmd.exe quoting issues
+            subprocess.Popen([chrome_path, url])
             return {
                 "status": "success",
                 "executable": chrome_path,
@@ -167,7 +164,11 @@ def open_browser(url: str, browser: str = "chrome") -> Dict[str, Any]:
         else:
             # Fallback to system default browser via os.startfile / webbrowser
             if os.name == 'nt':
-                os.startfile(url)
+                try:
+                    os.startfile(url)
+                except Exception:
+                    import webbrowser
+                    webbrowser.open(url)
             else:
                 import webbrowser
                 webbrowser.open(url)
@@ -280,12 +281,18 @@ def organize_directory_by_extension(target_directory: str) -> Dict[str, Any]:
 
             cat_dir = os.path.join(target_directory, target_folder)
             os.makedirs(cat_dir, exist_ok=True)
-            try:
-                shutil.move(item_path, os.path.join(cat_dir, item))
-                moved_count += 1
-                categories_used.add(target_folder)
-            except Exception as e:
-                logger.error(f"Failed to move {item}: {e}")
+            moved = False
+            for attempt in range(3):
+                try:
+                    shutil.move(item_path, os.path.join(cat_dir, item))
+                    moved_count += 1
+                    categories_used.add(target_folder)
+                    moved = True
+                    break
+                except Exception as e:
+                    time.sleep(0.15)
+            if not moved:
+                logger.error(f"Failed to move {item} after 3 attempts")
 
     return {
         "status": "success",
