@@ -246,6 +246,52 @@ async def human_decision(request: HumanDecisionRequest):
         raise HTTPException(500, str(e))
 
 
+# ─── OS & Laptop Automation Endpoints ──────────────────────────────────────────
+
+class OSAutomateRequest(BaseModel):
+    goal: str
+
+
+@app.get("/os/diagnostics")
+async def get_os_diagnostics():
+    """Returns live CPU, Memory, Disk, and Battery diagnostics."""
+    from tools.shell_tools import get_system_resources
+    return get_system_resources()
+
+
+@app.get("/os/windows")
+async def get_os_windows():
+    """List all open desktop windows and the currently active foreground window."""
+    from tools.desktop_tools import list_open_windows, get_active_window_info
+    return {
+        "active_window": get_active_window_info(),
+        "open_windows": list_open_windows()
+    }
+
+
+@app.post("/os/screenshot")
+async def capture_os_screenshot():
+    """Captures a screenshot of the laptop display and generates a coordinate grid."""
+    from tools.desktop_tools import take_screenshot, annotate_grid_on_image
+    shot = take_screenshot()
+    if shot["status"] == "success":
+        grid_path = annotate_grid_on_image(shot["file_path"])
+        shot["grid_path"] = grid_path
+    return shot
+
+
+@app.post("/os/automate")
+async def automate_os_task(request: OSAutomateRequest):
+    """
+    Executes a high-level laptop automation task using dynamic multi-agent orchestration.
+    Coordinates Shell, File, Vision/GUI agents with closed-loop verification.
+    """
+    from agents.os_supervisor import OSSupervisor
+    supervisor = OSSupervisor()
+    result = supervisor.execute_custom_plan(request.goal)
+    return result
+
+
 # ─── Startup ───────────────────────────────────────────────────────────────────
 
 @app.on_event("startup")
@@ -260,3 +306,4 @@ async def startup_event():
         subprocess.run(["python", "data/seed_db.py"], cwd=os.path.dirname(__file__))
         subprocess.run(["python", "data/seed_rag.py"], cwd=os.path.dirname(__file__))
         subprocess.run(["python", "data/seed_kg.py"], cwd=os.path.dirname(__file__))
+

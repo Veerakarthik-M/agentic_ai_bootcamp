@@ -20,9 +20,11 @@ build/
 .mypy_cache/
 .ruff_cache/
 
-# Logs
+# Logs & Cache
 *.log
 logs/
+cache/
+backend/cache/
 
 # Data
 data/private/

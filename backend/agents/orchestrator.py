@@ -144,7 +144,7 @@ def record_outcome_node(state: AgentState) -> AgentState:
         ))
     except Exception as e:
         trace.append(make_trace_entry("Experience DB", "Record failed", str(e), "WARNING"))
-        case_id = state.get("problem_id", "UNKNOWN")
+        raise RuntimeError("Could not persist the pending human-review case") from e
 
     return {**state, "case_id": case_id, "completed": True, "trace_log": trace}
 
@@ -196,11 +196,38 @@ def human_escalation_node(state: AgentState) -> AgentState:
         "WARNING"
     ))
 
+    try:
+        case_id = save_case(
+            problem_description=state["problem"],
+            problem_type=state.get("problem_analysis", {}).get("problem_type", "unknown"),
+            strategy=state.get("plan", {}).get("strategy_name", "unknown"),
+            agents_used=state.get("selected_agents", {}).get("selected_agents", []),
+            tools_used=["get_defect_history", "get_machine_data", "get_supplier_history",
+                       "search_engineering_docs", "run_statistical_analysis"],
+            confidence=state.get("confidence_result", {}).get("confidence", 0.0),
+            risk=state.get("risk_result", {}).get("risk", 0.0),
+            recommendation=state.get("final_recommendation", ""),
+            verification_result=state.get("verification_result", {}).get("result", "UNKNOWN"),
+            human_required=True,
+            human_decision=None,
+            outcome=None,
+            success=None
+        )
+        trace.append(make_trace_entry(
+            "Experience DB", "Case recorded (Pending)",
+            f"Case ID: {case_id} | Awaiting Human",
+            "WARNING"
+        ))
+    except Exception as e:
+        trace.append(make_trace_entry("Experience DB", "Record failed", str(e), "ERROR"))
+        case_id = state.get("problem_id", "UNKNOWN")
+
     return {
         **state,
         "awaiting_human": True,
         "completed": False,
-        "trace_log": trace
+        "trace_log": trace,
+        "case_id": case_id
     }
 
 

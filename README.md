@@ -455,3 +455,33 @@ python evaluation/run_eval.py --limit 5
 | Frontend | Self-contained HTML + CSS + JS |
 | Serving | Nginx (frontend) + Uvicorn (backend) |
 | Container | Docker Compose |
+
+---
+
+## 20. Autonomous Laptop & OS Multi-Agent Automation
+
+A dynamic multi-agent orchestration architecture designed to automate Windows OS desktop workflows with closed-loop verification and safety guardrails.
+
+### Specialized OS Agents:
+- **`OSSupervisor`**: Decomposes high-level user commands, coordinates cross-agent workflows, and handles dynamic replanning.
+- **`OSShellAgent`**: Executes PowerShell scripts, launches and tracks processes, and monitors system resources (CPU, RAM, Disk, Battery).
+- **`OSFileAgent`**: Searches drives, batch organizes directories by extension, parses documents, and manages files.
+- **`OSVisionAgent`**: Captures screen state (hardware or virtual buffer fallback), overlays Set-of-Marks coordinate grids, tracks foreground windows, and operates keyboard/mouse.
+- **`OSVerifierAgent`**: Closed-loop verification confirming that target processes launched/terminated, files were created, or window states changed.
+- **`OS Safety Guardrails`**: Real-time evaluation blocking destructive commands (e.g. disk formats, root recursive deletions, registry overrides) and protecting core Windows system processes (`csrss.exe`, `explorer.exe`, `winlogon.exe`).
+
+### API Endpoints:
+- `GET /os/diagnostics`: Live CPU, Memory, Disk, and Battery diagnostics.
+- `GET /os/windows`: List visible windows and currently active foreground window.
+- `POST /os/screenshot`: Capture screenshot and generate precision coordinate grid.
+- `POST /os/automate`: Execute end-to-end task via dynamic multi-agent supervisor.
+
+### Running Laptop Automation Tests:
+```bash
+# Run multi-process OS and agent test suite:
+python backend/tests/test_laptop_automation.py
+
+# Run FastAPI OS endpoints integration tests:
+python backend/tests/test_api_endpoints.py
+```
+
