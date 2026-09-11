@@ -178,37 +178,10 @@ run_statistical_analysis(type, data)       # Correlation, trend, anomaly
 query_knowledge_graph(query_type, params)  # Neo4j graph queries
 ```
 
----
-
-## 8. Confidence & Risk
-
-### Confidence (0.0 – 1.0)
-Computed from measurable signals — **not invented by the LLM**:
-
-```
-Confidence =
-  40% × Evidence Coverage   (sources retrieved: SQL + RAG + KG + analysis)
-  20% × Source Quality       (internal documents score higher)
-  20% × Agent Agreement      (contradiction detection penalizes this)
-  10% × Data Consistency     (SQL vs RAG cross-check)
-  10% × Verification Result  (PASS/PARTIAL/FAIL from Verifier)
-```
-
-### Risk (0.0 – 1.0)
-Kept **separate** from confidence — high confidence can coexist with high risk:
-
-```
-Risk =
-  30% × Action Reversibility  (production halt = 0.80, inspect = 0.20)
-  25% × Impact Scope          (number of machines/lines affected)
-  20% × Data Uncertainty      (1 - evidence coverage)
-  15% × Critic Flags          (severity + contradiction count)
-  10% × Policy Risk           (quality hold, waiver violations flagged)
-```
 
 ---
 
-## 9. Safety Router
+## 8. Safety Router
 
 Three rules, evaluated in priority order:
 
@@ -220,7 +193,7 @@ Three rules, evaluated in priority order:
 
 ---
 
-## 10. Human Escalation
+## 9. Human Escalation
 
 When escalated, the human receives:
 - Full problem description
@@ -237,7 +210,7 @@ All human decisions are recorded in the Experience DB.
 
 ---
 
-## 11. Verification
+## 10. Verification
 
 The Verifier independently checks each claim in the recommendation:
 - Cross-checks against SQL data, RAG documents, statistical analysis
@@ -246,7 +219,7 @@ The Verifier independently checks each claim in the recommendation:
 
 ---
 
-## 12. Contradiction Detection
+## 11. Contradiction Detection
 
 When SQL data and RAG documents contradict each other:
 1. Contradiction is detected and flagged in state
@@ -257,7 +230,7 @@ When SQL data and RAG documents contradict each other:
 
 ---
 
-## 13. Observability
+## 12. Observability
 
 Every step is traced with timestamp, agent, action, and detail:
 
@@ -281,7 +254,7 @@ Every step is traced with timestamp, agent, action, and detail:
 
 ---
 
-## 14. Experience Learning
+## 13. Experience Learning
 
 The system stores every case in the Experience DB:
 
@@ -311,7 +284,7 @@ When a **similar problem arrives**:
 
 ---
 
-## 15. Security
+## 14. Security
 
 - **No secrets in repository** — all keys in `.env` (see `.env.example`)
 - **Prompt injection defense** — every RAG-retrieved chunk scanned against known injection patterns before agent processing
@@ -321,7 +294,7 @@ When a **similar problem arrives**:
 
 ---
 
-## 16. Setup
+## 15. Setup
 
 ### Quick Start (Docker — recommended)
 
@@ -367,7 +340,7 @@ cd frontend
 
 ---
 
-## 17. Demo
+## 16. Demo
 
 ### Demo Case 1 — Successful Investigation
 ```
@@ -416,7 +389,7 @@ Expected output:
 
 ---
 
-## 18. Evaluation
+## 17. Evaluation
 
 Run the automated benchmark:
 
@@ -440,7 +413,7 @@ python evaluation/run_eval.py --limit 5
 
 ---
 
-## 19. Technical Stack
+## 18. Technical Stack
 
 | Component | Technology |
 |---|---|
@@ -458,7 +431,7 @@ python evaluation/run_eval.py --limit 5
 
 ---
 
-## 20. Autonomous Laptop & OS Multi-Agent Automation
+## 19. Autonomous Laptop & OS Multi-Agent Automation
 
 A dynamic multi-agent orchestration architecture designed to automate Windows OS desktop workflows with closed-loop verification and safety guardrails.
 
