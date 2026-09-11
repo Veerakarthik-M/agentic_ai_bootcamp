@@ -135,9 +135,8 @@ def start_process(executable: str, args: Optional[List[str]] = None, cwd: Option
 
 def open_browser(url: str, browser: str = "chrome") -> Dict[str, Any]:
     """
-    Opens a URL in Google Chrome or the system default browser.
+    Opens a URL in Google Chrome or the system default browser with full GUI window focus.
     """
-    import webbrowser
     chrome_candidates = [
         shutil.which("chrome"),
         r"C:\Program Files\Google\Chrome\Application\chrome.exe",
@@ -145,22 +144,38 @@ def open_browser(url: str, browser: str = "chrome") -> Dict[str, Any]:
         os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe")
     ]
 
+    chrome_path = None
     if browser.lower() == "chrome":
         for candidate in chrome_candidates:
             if candidate and os.path.exists(candidate):
-                res = start_process(candidate, [url])
-                res["url"] = url
-                res["browser"] = "Google Chrome"
-                return res
+                chrome_path = candidate
+                break
 
-    # Fallback to default browser
     try:
-        webbrowser.open(url)
-        return {
-            "status": "success",
-            "url": url,
-            "browser": "Default Web Browser"
-        }
+        if chrome_path:
+            # On Windows, 'cmd /c start' communicates with the Shell/DWM to create a visible, focused window
+            if os.name == 'nt':
+                subprocess.Popen(f'cmd /c start "" "{chrome_path}" "{url}"', shell=True)
+            else:
+                subprocess.Popen([chrome_path, url])
+            return {
+                "status": "success",
+                "executable": chrome_path,
+                "url": url,
+                "browser": "Google Chrome"
+            }
+        else:
+            # Fallback to system default browser via os.startfile / webbrowser
+            if os.name == 'nt':
+                os.startfile(url)
+            else:
+                import webbrowser
+                webbrowser.open(url)
+            return {
+                "status": "success",
+                "url": url,
+                "browser": "Default Web Browser"
+            }
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
