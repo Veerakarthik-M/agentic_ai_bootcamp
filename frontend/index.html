@@ -1700,8 +1700,22 @@
         document.getElementById('diag-bat-status').textContent = '⚡ Connected';
         document.getElementById('diag-bat-bar').style.width = '100%';
       }
+
+      // Update status badge
+      const statusBadge = document.getElementById('status-badge');
+      if (statusBadge) {
+        statusBadge.textContent = '● Backend Online';
+        statusBadge.style.color = 'var(--accent-green)';
+        statusBadge.className = 'badge badge-green';
+      }
     } catch (err) {
       console.debug('Failed to fetch diagnostics:', err);
+      const statusBadge = document.getElementById('status-badge');
+      if (statusBadge) {
+        statusBadge.textContent = '● Backend Offline (Port 8000)';
+        statusBadge.style.color = 'var(--accent-red)';
+        statusBadge.className = 'badge';
+      }
     }
   }
 
@@ -1774,7 +1788,11 @@
       renderOSResults(data);
 
     } catch (err) {
-      alert('OS Automation Error: ' + err.message);
+      if (err.message && err.message.includes('Failed to fetch')) {
+        alert('⚠️ Backend Offline: Could not connect to the agent backend at http://localhost:8000.\n\nPlease start the backend server by running:\n  python -m uvicorn main:app --port 8000\n(or double-click start_backend.bat)');
+      } else {
+        alert('OS Automation Error: ' + err.message);
+      }
     } finally {
       btn.disabled = false;
       icon.textContent = '⚡';
