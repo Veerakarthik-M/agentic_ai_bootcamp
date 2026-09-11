@@ -691,7 +691,217 @@
     .text-sm { font-size: 12px; }
     .mono { font-family: var(--font-mono); }
     .pulse { animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    /* ── Mode Switcher ── */
+    .mode-switcher {
+      display: flex;
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 3px;
+      gap: 4px;
+    }
+    .mode-btn {
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: var(--gradient-accent);
+      color: #050b14;
+      box-shadow: 0 0 15px rgba(59,158,221,0.3);
+    }
+
+    /* ── Desktop OS Copilot Layout ── */
+    .os-hero {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .os-hero h1 {
+      font-size: clamp(28px, 3.8vw, 44px);
+      font-weight: 800;
+      background: linear-gradient(135deg, #e2edf8 0%, #3b9edd 60%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .os-hero p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    /* ── Live Diagnostics Dashboard ── */
+    .diag-ribbon {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .diag-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .diag-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .diag-value {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+    .diag-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .diag-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    /* ── OS Active Window Card ── */
+    .active-win-banner {
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
+
+    /* ── Presets Grid ── */
+    .os-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .preset-pill {
+      background: rgba(59,158,221,0.08);
+      border: 1px solid rgba(59,158,221,0.25);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-pill:hover {
+      background: rgba(59,158,221,0.2);
+      border-color: var(--accent-cyan);
+    }
+
+    /* ── Agent Swarm Badges ── */
+    .swarm-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .swarm-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      transition: all 0.3s;
+    }
+    .swarm-badge.active {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      background: rgba(34,211,238,0.1);
+      box-shadow: 0 0 15px rgba(34,211,238,0.2);
+    }
+
+    /* ── Action Timeline ── */
+    .action-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .action-step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .action-step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .agent-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .verif-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .verif-badge.VERIFIED {
+      background: rgba(16,185,129,0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(16,185,129,0.3);
+    }
+    .verif-badge.FAILED {
+      background: rgba(239,68,68,0.15);
+      color: var(--accent-red);
+      border: 1px solid rgba(239,68,68,0.3);
+    }
+
+    /* ── Screen Visualizer ── */
+    .screen-preview-box {
+      width: 100%;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background: #000;
+      margin-top: 12px;
+    }
+    .screen-preview-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -699,20 +909,168 @@
 <!-- Header -->
 <header>
   <div class="logo">
-    <div class="logo-icon">🧠</div>
+    <div class="logo-icon">⚡</div>
     <div>
-      <div class="logo-text">AEPSA</div>
-      <div class="logo-sub">Adaptive Enterprise Problem-Solving AI</div>
+      <div class="logo-text">Autonomous OS &amp; Multi-Agent Swarm</div>
+      <div class="logo-sub">Desktop Copilot • Dynamic Swarm • Enterprise Problem Solver</div>
     </div>
   </div>
+
+  <div class="mode-switcher">
+    <button id="mode-btn-os" class="mode-btn active" onclick="switchMainMode('os')">🖥️ Desktop OS Copilot</button>
+    <button id="mode-btn-ent" class="mode-btn" onclick="switchMainMode('enterprise')">🏭 Industrial Enterprise</button>
+  </div>
+
   <div class="header-badges">
-    <div class="badge badge-blue">LangGraph</div>
-    <div class="badge badge-blue">Multi-Agent</div>
-    <div class="badge badge-green" id="status-badge">● Ready</div>
+    <div class="badge badge-blue">Dynamic Multi-Agent</div>
+    <div class="badge badge-green" id="status-badge">● Online</div>
   </div>
 </header>
 
 <main>
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- 🖥️ DESKTOP OS COPILOT VIEW (PRIMARY DEFAULT)                           -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div id="os-view-container">
+    <!-- OS Hero -->
+    <div class="os-hero">
+      <h1>Autonomous Desktop &amp; OS Copilot</h1>
+      <p>Dynamic multi-agent swarm orchestrating your Windows laptop with live diagnostics, screen perception, safe PowerShell execution, and closed-loop verification.</p>
+    </div>
+
+    <!-- Active Foreground Window Banner -->
+    <div class="active-win-banner" id="active-win-banner">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:16px">🪟</span>
+        <span><strong>Active Foreground App:</strong> <span id="win-title-val" style="color:var(--accent-cyan)">Inspecting...</span></span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="mono text-muted text-sm" id="win-pid-val">PID: —</span>
+        <button class="preset-pill" onclick="fetchWindows()" style="padding:2px 8px;font-size:11px">🔄 Refresh</button>
+      </div>
+    </div>
+
+    <!-- Live Diagnostics Ribbon -->
+    <div class="diag-ribbon">
+      <!-- CPU -->
+      <div class="diag-card">
+        <div class="diag-header">
+          <span>⚡ CPU LOAD</span>
+          <span class="mono" id="diag-cpu-badge">—%</span>
+        </div>
+        <div class="diag-value" id="diag-cpu-val">—</div>
+        <div class="diag-bar-bg">
+          <div class="diag-bar-fill" id="diag-cpu-bar" style="width:0%;background:var(--accent-blue)"></div>
+        </div>
+      </div>
+
+      <!-- RAM Memory -->
+      <div class="diag-card">
+        <div class="diag-header">
+          <span>🧠 RAM MEMORY</span>
+          <span class="mono" id="diag-ram-badge">—%</span>
+        </div>
+        <div class="diag-value" id="diag-ram-val">— GB</div>
+        <div class="diag-bar-bg">
+          <div class="diag-bar-fill" id="diag-ram-bar" style="width:0%;background:var(--accent-purple)"></div>
+        </div>
+      </div>
+
+      <!-- Disk C: -->
+      <div class="diag-card">
+        <div class="diag-header">
+          <span>💽 SYSTEM DISK (C:)</span>
+          <span class="mono" id="diag-disk-badge">—%</span>
+        </div>
+        <div class="diag-value" id="diag-disk-val">— GB Free</div>
+        <div class="diag-bar-bg">
+          <div class="diag-bar-fill" id="diag-disk-bar" style="width:0%;background:var(--accent-cyan)"></div>
+        </div>
+      </div>
+
+      <!-- Battery -->
+      <div class="diag-card">
+        <div class="diag-header">
+          <span>🔋 LAPTOP BATTERY</span>
+          <span class="mono" id="diag-bat-status">—</span>
+        </div>
+        <div class="diag-value" id="diag-bat-val">—%</div>
+        <div class="diag-bar-bg">
+          <div class="diag-bar-fill" id="diag-bat-bar" style="width:0%;background:var(--accent-green)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OS Command Input Deck -->
+    <div class="input-section" style="margin-bottom:28px">
+      <div class="input-wrapper">
+        <div class="input-label" style="display:flex;justify-content:space-between;align-items:center">
+          <div><span>💻</span> Instruct Laptop Multi-Agent Swarm</div>
+          <button class="preset-pill" onclick="takeLiveScreenshot()" style="font-size:11px;padding:4px 10px">📸 Live Screen Snapshot</button>
+        </div>
+        <textarea id="os-goal-input" placeholder="e.g., Check laptop battery & CPU health, list top memory processes, and capture screen..." rows="3"></textarea>
+        
+        <div class="os-presets">
+          <button class="preset-pill" onclick="setOSGoal('Check laptop battery, CPU health, and memory usage')">⚡ Laptop Health</button>
+          <button class="preset-pill" onclick="setOSGoal('Audit top memory hog processes and list them')">📊 Audit Top RAM Apps</button>
+          <button class="preset-pill" onclick="setOSGoal('Capture screen, active window, and generate coordinate grid')">📸 Screen &amp; Grid Perception</button>
+          <button class="preset-pill" onclick="setOSGoal('Organize Downloads folder files by category')">📁 Organize Downloads</button>
+          <button class="preset-pill" onclick="setOSGoal('Open notepad and write a quick system status summary')">📝 Open Notepad &amp; Note</button>
+          <button class="preset-pill" onclick="setOSGoal('Search for recent PDF documents on my laptop')">🔍 Search Documents</button>
+        </div>
+
+        <div class="input-footer" style="margin-top:14px">
+          <div style="font-size:12px;color:var(--text-muted)">Dynamic Supervisor coordinates Shell, File, Vision, and Verifier agents.</div>
+          <button class="analyze-btn" id="os-exec-btn" onclick="executeOSAutomation()">
+            <span id="os-btn-icon">⚡</span>
+            <span id="os-btn-text">Execute Multi-Agent Plan</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Swarm Agents Pills -->
+    <div class="swarm-pills" id="os-swarm-pills">
+      <div class="swarm-badge active" id="badge-supervisor">🧠 OS_Supervisor</div>
+      <div class="swarm-badge" id="badge-shell">⚡ OS_Shell_Agent</div>
+      <div class="swarm-badge" id="badge-file">📁 OS_File_Agent</div>
+      <div class="swarm-badge" id="badge-vision">👁️ OS_Vision_GUI_Agent</div>
+      <div class="swarm-badge" id="badge-verifier">✅ OS_Verifier_Agent</div>
+      <div class="swarm-badge" id="badge-safety">🛡️ OS_Safety_Guardrail</div>
+    </div>
+
+    <!-- OS Execution Results Area -->
+    <div id="os-results-card" class="card hidden" style="margin-bottom:24px">
+      <div class="card-title" style="display:flex;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="dot"></div> Multi-Agent Execution &amp; Closed-Loop Verification
+        </div>
+        <div class="mono text-sm text-cyan" id="os-task-id-tag">Task: —</div>
+      </div>
+
+      <!-- Final Summary -->
+      <div id="os-summary-box" style="padding:14px;background:rgba(59,158,221,0.06);border:1px solid var(--border-glow);border-radius:var(--radius-sm);margin-bottom:16px;font-size:14px;line-height:1.5">
+        Orchestration summary will appear here.
+      </div>
+
+      <!-- Action Step Timeline -->
+      <div class="action-timeline" id="os-timeline">
+      </div>
+
+      <!-- Screen Preview Box (if screenshot was taken) -->
+      <div id="os-screen-box" class="hidden" style="margin-top:18px">
+        <div style="font-size:12px;font-weight:700;color:var(--accent-cyan);margin-bottom:8px">📸 Live Desktop Perception (Set-of-Marks Coordinate Grid):</div>
+        <div class="screen-preview-box">
+          <img id="os-screen-img" class="screen-preview-img" src="" alt="Desktop Screen Capture" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- 🏭 INDUSTRIAL ENTERPRISE PROBLEM-SOLVING VIEW (PRESERVED)               -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div id="enterprise-view-container" class="hidden">
   <!-- Hero -->
   <div class="hero">
     <h1>Enterprise Intelligence,<br/>Grounded &amp; Verified</h1>
@@ -894,6 +1252,7 @@
       <div id="error-text" style="font-size:13px;opacity:0.8"></div>
     </div>
   </div>
+  </div> <!-- Close enterprise-view-container -->
 </main>
 
 <!-- Human Escalation Modal -->
@@ -1283,16 +1642,230 @@
     }
   }
 
-  // Load experience on page load
+  // ─── Desktop OS Copilot Logic ────────────────────────────────────────────────
+
+  function switchMainMode(mode) {
+    const isOS = mode === 'os';
+    document.getElementById('mode-btn-os').classList.toggle('active', isOS);
+    document.getElementById('mode-btn-ent').classList.toggle('active', !isOS);
+    document.getElementById('os-view-container').classList.toggle('hidden', !isOS);
+    document.getElementById('enterprise-view-container').classList.toggle('hidden', isOS);
+
+    if (isOS) {
+      fetchDiagnostics();
+      fetchWindows();
+    }
+  }
+
+  function setOSGoal(goal) {
+    document.getElementById('os-goal-input').value = goal;
+  }
+
+  async function fetchDiagnostics() {
+    try {
+      const resp = await fetch(`${BACKEND}/os/diagnostics`);
+      if (!resp.ok) return;
+      const data = await resp.json();
+
+      // CPU
+      const cpu = Math.round(data.cpu_percent || 0);
+      document.getElementById('diag-cpu-badge').textContent = `${cpu}%`;
+      document.getElementById('diag-cpu-val').textContent = `${cpu}%`;
+      document.getElementById('diag-cpu-bar').style.width = `${Math.min(cpu, 100)}%`;
+      document.getElementById('diag-cpu-bar').style.background = cpu > 80 ? 'var(--accent-red)' : cpu > 50 ? 'var(--accent-yellow)' : 'var(--accent-blue)';
+
+      // RAM
+      const ram = data.memory || {};
+      const ramPct = Math.round(ram.percent || 0);
+      document.getElementById('diag-ram-badge').textContent = `${ramPct}%`;
+      document.getElementById('diag-ram-val').textContent = `${ram.used_gb || 0} / ${ram.total_gb || 0} GB`;
+      document.getElementById('diag-ram-bar').style.width = `${ramPct}%`;
+
+      // Disk C:
+      const disk = data.disk_c || {};
+      const diskPct = Math.round(disk.percent_used || 0);
+      document.getElementById('diag-disk-badge').textContent = `${diskPct}%`;
+      document.getElementById('diag-disk-val').textContent = `${disk.free_gb || 0} GB Free`;
+      document.getElementById('diag-disk-bar').style.width = `${diskPct}%`;
+
+      // Battery
+      const bat = data.battery || {};
+      if (bat.percent !== undefined) {
+        const batPct = Math.round(bat.percent);
+        document.getElementById('diag-bat-val').textContent = `${batPct}%`;
+        document.getElementById('diag-bat-status').textContent = bat.power_plugged ? '⚡ AC Plugged' : '🔋 Discharging';
+        document.getElementById('diag-bat-bar').style.width = `${batPct}%`;
+      } else {
+        document.getElementById('diag-bat-val').textContent = 'Desktop / AC';
+        document.getElementById('diag-bat-status').textContent = '⚡ Connected';
+        document.getElementById('diag-bat-bar').style.width = '100%';
+      }
+    } catch (err) {
+      console.debug('Failed to fetch diagnostics:', err);
+    }
+  }
+
+  async function fetchWindows() {
+    try {
+      const resp = await fetch(`${BACKEND}/os/windows`);
+      if (!resp.ok) return;
+      const data = await resp.json();
+      const active = data.active_window || {};
+      const title = active.title || 'Desktop Surface';
+      document.getElementById('win-title-val').textContent = title.length > 55 ? title.slice(0, 52) + '...' : title;
+      document.getElementById('win-pid-val').textContent = active.pid ? `PID: ${active.pid}` : 'PID: —';
+    } catch (err) {
+      console.debug('Failed to fetch windows:', err);
+    }
+  }
+
+  async function takeLiveScreenshot() {
+    try {
+      const resp = await fetch(`${BACKEND}/os/screenshot`, { method: 'POST' });
+      if (!resp.ok) return;
+      const data = await resp.json();
+      if (data.grid_base64) {
+        document.getElementById('os-screen-img').src = `data:image/png;base64,${data.grid_base64}`;
+        document.getElementById('os-screen-box').classList.remove('hidden');
+        document.getElementById('os-results-card').classList.remove('hidden');
+      }
+    } catch (err) {
+      alert('Screenshot capture notice: ' + err.message);
+    }
+  }
+
+  async function executeOSAutomation() {
+    const goal = document.getElementById('os-goal-input').value.trim();
+    if (!goal) {
+      alert('Please enter a goal or select a preset.');
+      return;
+    }
+
+    const btn = document.getElementById('os-exec-btn');
+    const icon = document.getElementById('os-btn-icon');
+    const text = document.getElementById('os-btn-text');
+
+    btn.disabled = true;
+    icon.innerHTML = '<span class="spinner"></span>';
+    text.textContent = 'Orchestrating Agents...';
+
+    // Reset results card
+    document.getElementById('os-results-card').classList.add('hidden');
+    document.getElementById('os-timeline').innerHTML = '';
+
+    // Reset agent badges
+    ['badge-shell', 'badge-file', 'badge-vision', 'badge-verifier', 'badge-safety'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+
+    try {
+      const resp = await fetch(`${BACKEND}/os/automate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goal })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json();
+        throw new Error(err.detail || 'Automation failed');
+      }
+
+      const data = await resp.json();
+      renderOSResults(data);
+
+    } catch (err) {
+      alert('OS Automation Error: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      icon.textContent = '⚡';
+      text.textContent = 'Execute Multi-Agent Plan';
+      fetchDiagnostics();
+      fetchWindows();
+    }
+  }
+
+  function renderOSResults(data) {
+    document.getElementById('os-results-card').classList.remove('hidden');
+    document.getElementById('os-task-id-tag').textContent = `Task: ${data.task_id || 'OK'}`;
+    document.getElementById('os-summary-box').innerHTML = `
+      <strong>Summary:</strong> ${data.final_summary || 'Task completed.'}
+      ${data.error ? `<div style="color:var(--accent-red);margin-top:4px">⚠️ Alert: ${data.error}</div>` : ''}
+    `;
+
+    // Highlight active agents
+    const agents = data.required_agents || [];
+    if (agents.includes('OS_Shell_Agent')) document.getElementById('badge-shell').classList.add('active');
+    if (agents.includes('OS_File_Agent')) document.getElementById('badge-file').classList.add('active');
+    if (agents.includes('OS_Vision_GUI_Agent')) document.getElementById('badge-vision').classList.add('active');
+    document.getElementById('badge-verifier').classList.add('active');
+    if (data.risk_score > 0.4 || data.hitl_required) document.getElementById('badge-safety').classList.add('active');
+
+    // Render action steps
+    const timelineEl = document.getElementById('os-timeline');
+    const actions = data.actions_history || [];
+
+    if (!actions.length) {
+      timelineEl.innerHTML = '<div class="text-muted text-sm">No action steps recorded.</div>';
+    } else {
+      timelineEl.innerHTML = actions.map((act, i) => {
+        const isVerif = act.status === 'VERIFIED';
+        const agentName = act.agent || 'Agent';
+        const resStr = typeof act.result === 'object' ? JSON.stringify(act.result, null, 2) : String(act.result);
+
+        return `
+          <div class="action-step-card">
+            <div class="action-step-header">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="agent-tag" style="background:rgba(59,158,221,0.15);color:var(--accent-cyan);border:1px solid rgba(59,158,221,0.3)">
+                  Step ${i+1}: ${agentName}
+                </span>
+                <span style="font-size:13px;font-weight:600">${act.action_type || 'Action'}</span>
+              </div>
+              <span class="verif-badge ${act.status}">${isVerif ? '✓ VERIFIED' : '✗ FAILED'}</span>
+            </div>
+            <div style="font-size:12px;color:var(--text-secondary);font-family:var(--font-mono)">
+              Params: ${act.command_or_target || 'None'}
+            </div>
+            <details style="margin-top:6px">
+              <summary style="font-size:11px;color:var(--accent-blue);cursor:pointer">Inspect Step Execution Details</summary>
+              <pre style="margin-top:6px;padding:8px;background:rgba(0,0,0,0.3);border-radius:4px;font-size:11px;color:var(--text-secondary);overflow-x:auto">${resStr}</pre>
+            </details>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Check if any screenshot was taken
+    const shotAction = actions.find(a => a.result && (a.result.grid_file_path || a.result.file_path));
+    if (shotAction) {
+      takeLiveScreenshot();
+    }
+  }
+
+  // Load experience and initial OS stats on page load
   window.addEventListener('load', () => {
+    fetchDiagnostics();
+    fetchWindows();
     loadExperience();
+
+    // Auto-refresh laptop diagnostics every 10 seconds
+    setInterval(() => {
+      fetchDiagnostics();
+    }, 10000);
   });
 
-  // Allow Enter key in textarea (shift+enter for newline)
+  // Allow Enter key in textareas
   document.getElementById('problem-input').addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       runAnalysis();
+    }
+  });
+
+  document.getElementById('os-goal-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      executeOSAutomation();
     }
   });
 </script>

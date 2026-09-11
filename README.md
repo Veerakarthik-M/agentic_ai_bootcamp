@@ -1,12 +1,12 @@
-# Adaptive Enterprise Problem-Solving AI (AEPSA)
+# Autonomous Desktop OS Copilot & Multi-Agent Swarm
 
-> **Evidence-grounded, outcome-driven multi-agent intelligence for complex enterprise problems.**
+> **Complete Windows OS desktop automation powered by dynamic multi-agent orchestration, live screen perception (Set-of-Marks grid), safe PowerShell execution, and closed-loop verification — preserving the Adaptive Enterprise Problem Solver (AEPSA) as a dedicated operational mode.**
 
-[![LangGraph](https://img.shields.io/badge/LangGraph-Orchestration-blue)](https://github.com/langchain-ai/langgraph)
+[![Desktop Automation](https://img.shields.io/badge/Desktop_OS-Automation-cyan)](https://github.com/Veerakarthik-M/agentic_ai_bootcamp)
+[![LangGraph](https://img.shields.io/badge/LangGraph-Multi--Agent-blue)](https://github.com/langchain-ai/langgraph)
 [![FastMCP](https://img.shields.io/badge/FastMCP-Tools-green)](https://github.com/jlowin/fastmcp)
-[![Gemini](https://img.shields.io/badge/Gemini_1.5_Flash-LLM-orange)](https://ai.google.dev/)
-[![Qdrant](https://img.shields.io/badge/Qdrant-Vector_RAG-purple)](https://qdrant.tech/)
-[![Neo4j](https://img.shields.io/badge/Neo4j-Knowledge_Graph-blue)](https://neo4j.com/)
+[![Gemini](https://img.shields.io/badge/Gemini-LLM-orange)](https://ai.google.dev/)
+[![Safety](https://img.shields.io/badge/Safety-Guardrails_&_HITL-red)](https://github.com/Veerakarthik-M/agentic_ai_bootcamp)
 
 ---
 

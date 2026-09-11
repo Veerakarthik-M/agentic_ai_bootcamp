@@ -74,6 +74,42 @@ def list_processes(filter_name: Optional[str] = None, limit: int = 25) -> List[D
     return procs
 
 
+def list_top_processes(sort_by: str = "memory", limit: int = 10) -> List[Dict[str, Any]]:
+    """
+    List top resource consuming processes sorted by 'memory' or 'cpu'.
+    """
+    procs = []
+    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent', 'status']):
+        try:
+            info = proc.info
+            name = info.get('name') or ''
+            if name:
+                procs.append({
+                    "pid": info['pid'],
+                    "name": name,
+                    "cpu_percent": info.get('cpu_percent') or 0.0,
+                    "memory_percent": round(info.get('memory_percent') or 0.0, 2),
+                    "status": info.get('status')
+                })
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+    sort_key = 'memory_percent' if sort_by == 'memory' else 'cpu_percent'
+    procs.sort(key=lambda x: x[sort_key], reverse=True)
+    return procs[:limit]
+
+
+def get_user_folders() -> Dict[str, str]:
+    """Return common user folders (Downloads, Documents, Desktop)."""
+    home = os.path.expanduser("~")
+    return {
+        "home": home,
+        "downloads": os.path.join(home, "Downloads"),
+        "documents": os.path.join(home, "Documents"),
+        "desktop": os.path.join(home, "Desktop")
+    }
+
+
 def start_process(executable: str, args: Optional[List[str]] = None, cwd: Optional[str] = None) -> Dict[str, Any]:
     """
     Launches a local application or background process (e.g. notepad.exe, calc.exe).

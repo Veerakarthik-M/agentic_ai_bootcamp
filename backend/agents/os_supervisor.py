@@ -46,22 +46,31 @@ class OSSupervisor:
                 "verification": {"type": "action_status"}
             })
 
-        # Pattern 2: Process inspection or management
-        if "process" in goal_lower or "list app" in goal_lower or "running" in goal_lower:
+        # Pattern 2: Process audit or management
+        if any(w in goal_lower for w in ["top process", "high ram", "high cpu", "memory hog", "heavy process"]):
+            required_agents.add("OS_Shell_Agent")
+            plan.append({
+                "step_id": len(plan) + 1,
+                "agent": "OS_Shell_Agent",
+                "description": "Identify top memory and CPU consuming processes",
+                "action": "list_top_processes",
+                "params": {"sort_by": "cpu" if "cpu" in goal_lower else "memory", "limit": 10},
+                "verification": {"type": "action_status"}
+            })
+        elif "process" in goal_lower or "list app" in goal_lower or "running" in goal_lower:
             required_agents.add("OS_Shell_Agent")
             plan.append({
                 "step_id": len(plan) + 1,
                 "agent": "OS_Shell_Agent",
                 "description": "Query running processes matching criteria",
                 "action": "list_processes",
-                "params": {"limit": 10},
+                "params": {"limit": 15},
                 "verification": {"type": "action_status"}
             })
 
-        # Pattern 3: Launch Notepad or text editor
-        if "notepad" in goal_lower and ("open" in goal_lower or "launch" in goal_lower or "start" in goal_lower or "write" in goal_lower):
+        # Pattern 3: Launch Notepad or text editor & optionally write
+        if "notepad" in goal_lower and any(w in goal_lower for w in ["open", "launch", "start", "write", "note"]):
             required_agents.add("OS_Shell_Agent")
-            required_agents.add("OS_Vision_GUI_Agent")
             plan.append({
                 "step_id": len(plan) + 1,
                 "agent": "OS_Shell_Agent",
@@ -74,6 +83,16 @@ class OSSupervisor:
                     "expected": True
                 }
             })
+            if any(w in goal_lower for w in ["write", "type", "put", "text"]):
+                required_agents.add("OS_Vision_GUI_Agent")
+                plan.append({
+                    "step_id": len(plan) + 1,
+                    "agent": "OS_Vision_GUI_Agent",
+                    "description": "Type automated notes into active window",
+                    "action": "type",
+                    "params": {"text": "Agentic AI Desktop Copilot: Automation task executed successfully.\n", "press_enter": True},
+                    "verification": {"type": "action_status"}
+                })
 
         # Pattern 4: Screen capture / observation
         if any(w in goal_lower for w in ["screenshot", "screen", "see", "look", "observe"]):
@@ -87,25 +106,39 @@ class OSSupervisor:
                 "verification": {"type": "action_status"}
             })
 
-        # Pattern 5: File search or organization
-        if any(w in goal_lower for w in ["organize", "find file", "search file", "clean download"]):
+        # Pattern 5: File search or organization across common folders
+        if any(w in goal_lower for w in ["organize", "find file", "search file", "clean download", "file", "folder"]):
+            import os
+            from tools.shell_tools import get_user_folders
+            user_dirs = get_user_folders()
+            
+            # Resolve target directory
+            target_dir = "."
+            if "download" in goal_lower:
+                target_dir = user_dirs["downloads"]
+            elif "desktop" in goal_lower:
+                target_dir = user_dirs["desktop"]
+            elif "document" in goal_lower:
+                target_dir = user_dirs["documents"]
+
             required_agents.add("OS_File_Agent")
-            if "organize" in goal_lower:
+            if any(w in goal_lower for w in ["organize", "clean", "sort"]):
                 plan.append({
                     "step_id": len(plan) + 1,
                     "agent": "OS_File_Agent",
-                    "description": "Organize target directory files by category",
+                    "description": f"Organize files in '{target_dir}' into categorized folders",
                     "action": "organize_directory",
-                    "params": {"directory": "."},
+                    "params": {"directory": target_dir},
                     "verification": {"type": "action_status"}
                 })
             else:
+                pattern = "*.pdf" if "pdf" in goal_lower else ("*.csv" if "csv" in goal_lower else "*")
                 plan.append({
                     "step_id": len(plan) + 1,
                     "agent": "OS_File_Agent",
-                    "description": "Search directory for requested files",
+                    "description": f"Search for files matching '{pattern}' in '{target_dir}'",
                     "action": "find_files",
-                    "params": {"directory": ".", "pattern": "*"},
+                    "params": {"directory": target_dir, "pattern": pattern},
                     "verification": {"type": "action_status"}
                 })
 

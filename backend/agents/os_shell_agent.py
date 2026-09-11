@@ -9,7 +9,7 @@ import logging
 from typing import Dict, Any, List, Optional
 
 from tools.shell_tools import (
-    execute_powershell, list_processes, start_process,
+    execute_powershell, list_processes, list_top_processes, start_process,
     kill_process, get_system_resources
 )
 from safety.os_safety import assess_shell_risk, assess_process_kill_risk
@@ -75,5 +75,9 @@ class OSShellAgent:
         elif action == "list_processes":
             filter_name = params.get("filter_name")
             return {"status": "success", "processes": list_processes(filter_name=filter_name)}
+        elif action == "list_top_processes":
+            sort_by = params.get("sort_by", "memory")
+            limit = params.get("limit", 10)
+            return {"status": "success", "processes": list_top_processes(sort_by=sort_by, limit=limit)}
         else:
             return {"status": "error", "message": f"Unknown shell action: {action}"}

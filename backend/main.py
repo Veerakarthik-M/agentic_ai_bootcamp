@@ -272,11 +272,17 @@ async def get_os_windows():
 @app.post("/os/screenshot")
 async def capture_os_screenshot():
     """Captures a screenshot of the laptop display and generates a coordinate grid."""
+    import base64
     from tools.desktop_tools import take_screenshot, annotate_grid_on_image
     shot = take_screenshot()
     if shot["status"] == "success":
         grid_path = annotate_grid_on_image(shot["file_path"])
         shot["grid_path"] = grid_path
+        try:
+            with open(grid_path, "rb") as f:
+                shot["grid_base64"] = base64.b64encode(f.read()).decode("utf-8")
+        except Exception:
+            pass
     return shot
 
 
