@@ -68,6 +68,31 @@ class OSSupervisor:
                 "verification": {"type": "action_status"}
             })
 
+        # Pattern 2.5: Browser & Website opening (e.g. YouTube, Google, web URLs)
+        if any(w in goal_lower for w in ["chrome", "browser", "youtube", "yt", "open site", "url", "website", "web"]):
+            target_url = "https://www.youtube.com" if any(w in goal_lower for w in ["youtube", "yt"]) else "https://www.google.com"
+            if "github" in goal_lower:
+                target_url = "https://github.com"
+            for token in user_goal.split():
+                if token.startswith("http://") or token.startswith("https://"):
+                    target_url = token
+                    break
+
+            browser_name = "chrome" if "chrome" in goal_lower else "default"
+            required_agents.add("OS_Shell_Agent")
+            plan.append({
+                "step_id": len(plan) + 1,
+                "agent": "OS_Shell_Agent",
+                "description": f"Open '{target_url}' using Google Chrome",
+                "action": "open_browser",
+                "params": {"url": target_url, "browser": browser_name},
+                "verification": {
+                    "type": "process_running",
+                    "process_name": "chrome.exe",
+                    "expected": True
+                }
+            })
+
         # Pattern 3: Launch Notepad or text editor & optionally write
         if "notepad" in goal_lower and any(w in goal_lower for w in ["open", "launch", "start", "write", "note"]):
             required_agents.add("OS_Shell_Agent")

@@ -168,6 +168,22 @@ class TestLaptopAutomationSuite(unittest.TestCase):
 
         print(f"[TEST 6 PASS] Multi-agent orchestration completed {len(decomp['plan'])} steps across agents: {decomp['required_agents']}")
 
+    def test_07_browser_task_youtube_chrome(self):
+        """Test dynamic orchestration for opening YouTube in Chrome."""
+        supervisor = OSSupervisor()
+        goal = "open yt using chrome"
+        decomp = supervisor.decompose_goal(goal)
+
+        self.assertIn("OS_Shell_Agent", decomp["required_agents"])
+        step = decomp["plan"][0]
+        self.assertEqual(step["action"], "open_browser")
+        self.assertEqual(step["params"]["url"], "https://www.youtube.com")
+
+        state = supervisor.execute_custom_plan(goal, plan=decomp["plan"])
+        self.assertTrue(state["is_completed"])
+        self.assertEqual(state["actions_history"][0]["status"], "VERIFIED")
+        print("[TEST 7 PASS] Multi-agent system successfully planned, launched, and verified opening YouTube in Chrome.")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

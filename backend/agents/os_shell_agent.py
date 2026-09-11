@@ -10,7 +10,7 @@ from typing import Dict, Any, List, Optional
 
 from tools.shell_tools import (
     execute_powershell, list_processes, list_top_processes, start_process,
-    kill_process, get_system_resources
+    kill_process, get_system_resources, open_browser
 )
 from safety.os_safety import assess_shell_risk, assess_process_kill_risk
 from agents.os_state import OSAutomationState
@@ -54,6 +54,10 @@ class OSShellAgent:
         """Query system CPU, RAM, Disk, and Battery."""
         return get_system_resources()
 
+    def open_web_url(self, url: str, browser: str = "chrome") -> Dict[str, Any]:
+        """Launch web browser with target URL."""
+        return open_browser(url=url, browser=browser)
+
     def process_step(self, step: Dict[str, Any], state: OSAutomationState) -> Dict[str, Any]:
         """Execute a step designated for the Shell Agent."""
         action = step.get("action", "")
@@ -66,6 +70,10 @@ class OSShellAgent:
             exe = params.get("executable", "")
             args = params.get("args")
             return self.launch_app(exe, args)
+        elif action == "open_browser":
+            url = params.get("url", "https://www.youtube.com")
+            browser = params.get("browser", "chrome")
+            return self.open_web_url(url=url, browser=browser)
         elif action == "terminate_process":
             pid = params.get("pid")
             name = params.get("name", "")

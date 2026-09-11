@@ -133,6 +133,38 @@ def start_process(executable: str, args: Optional[List[str]] = None, cwd: Option
         }
 
 
+def open_browser(url: str, browser: str = "chrome") -> Dict[str, Any]:
+    """
+    Opens a URL in Google Chrome or the system default browser.
+    """
+    import webbrowser
+    chrome_candidates = [
+        shutil.which("chrome"),
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe")
+    ]
+
+    if browser.lower() == "chrome":
+        for candidate in chrome_candidates:
+            if candidate and os.path.exists(candidate):
+                res = start_process(candidate, [url])
+                res["url"] = url
+                res["browser"] = "Google Chrome"
+                return res
+
+    # Fallback to default browser
+    try:
+        webbrowser.open(url)
+        return {
+            "status": "success",
+            "url": url,
+            "browser": "Default Web Browser"
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
 def kill_process(pid: int) -> Dict[str, Any]:
     """
     Terminates a process by its PID.
